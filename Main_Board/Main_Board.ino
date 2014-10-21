@@ -18,12 +18,12 @@
   long duration_C, cm_C, duration_R, cm_R, duration_L, cm_L;
   
   //TREX variables
-  int sv[6]={1500,0,0,0,0,0};                 // servo positions: 0 = Not Used
+  int sv[6]={1500,0,0,0,0,0};                          // servo positions: 0 = Not Used
   //int sd[6]={5,10,-5,-15,20,-20};                      // servo sweep speed/direction (Only if sweeping servos are required
   int lmspeed,rmspeed;                                 // left and right motor speed from -255 to +255 (negative value = reverse)
-  int ldir=5;                                          // how much to change left  motor speed each loop (use for motor testing)
-  int rdir=5;                                          // how much to change right motor speed each loop (use for motor testing)
-  byte lmbrake,rmbrake;                                // left and right motor brake (non zero value = brake)
+  int ldir=5;                                          // how much to change leading  motor speed each loop (use for motor testing)
+  int rdir=5;                                          // how much to change rear motor speed each loop (use for motor testing)
+  byte lmbrake,rmbrake;                                // leading and rear motor brake (non zero value = brake)
   byte devibrate=50;                                   // time delay after impact to prevent false re-triggering due to chassis vibration
   int sensitivity=50;                                  // threshold of acceleration / deceleration required to register as an impact
   int lowbat=550;                                      // adjust to suit your battery: 550 = 5.50V
@@ -57,7 +57,7 @@
     if(cm_C >= 250 && cm_R >= 250 && cm_L >= 250)
     {
      straight();
-      forward();
+     forward();
     }
    
   //obstacle(s) within 0-30cm range
@@ -67,7 +67,8 @@
      backward();
      delay(1500);
      stop();
-       if(j%3 == 0){ //This if/else statement is designed to build a little "randomness"
+       if(j%3 == 0) //This if/else statement is designed to build a little "randomness"
+       { 
        backward();
        right(); //into the robot's movements, so it is less likely to become stuck
        right(); //in a loop, performing the same actions over and over which only.
@@ -77,7 +78,8 @@
        forward();
        j=1;
        }
-     else{
+     else
+     {
        backward();
        left();
        left();
