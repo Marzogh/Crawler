@@ -1,12 +1,12 @@
 void forward()
    {                                    // turns on drive motor in forward and leaves it on
      int s;
-     while (s > -1 &&  s < 256)
+     while (s>-1 && s<256)
      {
        s++;
      }
-     lmspeed = s;
-     rmspeed = s;
+     lmspeed=s;
+     rmspeed=s;
      
      for(byte i=0;i<s_no;i++)          // Max value of i should be < total number of servos
     {
@@ -21,12 +21,12 @@ void forward()
 void backward()
    {                                    // turns on drive motor in reverse and leaves it on
      int s;
-     while (s < 1 &&  s > -256)
+     while (s<1 && s>-256)
      {
        s--;
      }
-     lmspeed = s;
-     rmspeed = s;
+     lmspeed=s;
+     rmspeed=s;
      
       for(byte i=0;i<s_no;i++)         // Max value of i should be < total number of steering servos
     {
@@ -79,11 +79,11 @@ void straight()
 
 void stop()                      //stop both motors
    {
-     lmbrake = 1;
-     rmbrake = 1;                //Brake both motors
+     lmbrake=1;
+     rmbrake=1;                //Brake both motors
      
-     lmspeed = 0;
-     rmspeed = 0;                //Stop both motors
+     lmspeed=0;
+     rmspeed=0;                //Stop both motors
      
       for(byte i=0;i<s_no;i++)         // Max value of i should be < total number of steering servos
     {
