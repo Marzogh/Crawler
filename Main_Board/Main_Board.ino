@@ -40,7 +40,7 @@
   byte lmbrake,rmbrake;                                // leading and rear motor brake (non zero value = brake)
   byte devibrate=50;                                   // time delay after impact to prevent false re-triggering due to chassis vibration
   int sensitivity=50;                                  // threshold of acceleration / deceleration required to register as an impact
-  int lowbat=550;                                      // adjust to suit your battery: 550 = 5.50V
+  int lowbat=590;                                      // adjust to suit your battery: 550 = 5.50V
   byte i2caddr=7;                                      // default I2C address of T'REX is 7. If this is changed, the T'REX will automatically store new address in EEPROM
   byte i2cfreq=0;                                      // I2C clock frequency. Default is 0=100kHz. Set to 1 for 400kHz
   //byte dir=0                                         // Indicates direction of travel 0=forward; 1=backward
