@@ -8,7 +8,7 @@
  //   .||.   .||  || `|...     `|....' .||.   `|..||.    \/\/    .||. `|...  .||.      .||      .||.   `|..|'    || `|...  `|..'   `|..'   //
  //                                                                                                                                        //
  //                  An autonomous rover designed and built around a 1/5th Rock Crawler chasis by Prajwal Bhattaram                        //
- //                                                          v.0.1.0                                                                       //
+ //                                                       v.0.2.0-alpha                                                                    //
  //                                                        21.Oct.2014                                                                     //
  // =====================================================================================================================================  //                                                                                                       `..|'                      
   
@@ -30,8 +30,9 @@
   const int pingPin_L = 26;//sets the pin for the PING sensor on the left side of the car
   const int echoPin_L = 27;//sets the pin for the ECHO sensor on the left side of the car
   long duration_C, cm_C, duration_R, cm_R, duration_L, cm_L;
+  int r;
   
-  //TREX variables
+  //TREX MasterSend variables
   int sv[6]={1500,0,0,0,0,0};                          // servo positions: 0 = Not Used
   //int sd[6]={5,10,-5,-15,20,-20};                      // servo sweep speed/direction (Only if sweeping servos are required
   int lmspeed,rmspeed;                                 // left and right motor speed from -255 to +255 (negative value = reverse)
@@ -45,6 +46,14 @@
   byte i2cfreq=0;                                      // I2C clock frequency. Default is 0=100kHz. Set to 1 for 400kHz
   //byte dir=0                                         // Indicates direction of travel 0=forward; 1=backward
   int s_no=1;                                          //Indicates number of servos
+  
+  //TREX MasterReceive variables
+  int lmcur,rmcur;                                       // left and right motor current
+  int lmenc,rmenc;                                       // left and right encoder values
+  int volts;                                             // battery voltage*10 (accurate to 1 decimal place)
+  int xaxis,yaxis,zaxis;                                 // X, Y, Z accelerometer readings
+  int deltx,delty,deltz;                                 // X, Y, Z impact readings 
+  int magnitude;                                         // impact magnitude
   
   void setup()
   {
@@ -64,150 +73,36 @@
     for(i=0; i<1; i*1)
     {
       j++;
+      r=j;
       pingAll();
-      
-      
-      //all clear, no obstacles within 250cm in any direction
-    if(cm_C >= 250 && cm_R >= 250 && cm_L >= 250)
-    {
-     straight();
-     forward();
-    }
-   
-  //obstacle(s) within 0-30cm range
-    else if (cm_L < 30 || cm_C < 30 || cm_R < 30)
-    {
-     stop();
-     backward();
-     delay(1500);
-     stop();
-       if(j%3 == 0) //This if/else statement is designed to build a little "randomness"
-       { 
-       backward();
-       right(); //into the robot's movements, so it is less likely to become stuck
-       right(); //in a loop, performing the same actions over and over which only.
-       stop();
-       left();
-       delay(500);
-       forward();
-       j=1;
-       }
-     else
-     {
-       backward();
-       left();
-       left();
-       stop();
-       right();
-       delay(500);
-       forward();
-       }
-    }
-   
-  //obstacle(s) within 30cm-60cm range
-   
-    //obstacle on left and center and right
-    else if (cm_R < 60 && cm_C < 60 && cm_L < 60)
-    {
-     stop();
-     backward();
-     delay(1500);
-     left();
-     delay(500);
-     stop();
-     right();
-     forward();
-    }
-    //obstacle on center OR left and right
-    else if (cm_L >= 60 && cm_R >= 60 && cm_C < 60 ||
-              cm_C >= 60 && cm_R < 60 && cm_L < 60)
-    {
-     stop();
-     backward();
-     delay(1500);
-     left();
-     delay(500);
-     stop();
-     right();
-     forward();
-    }
-    //obstacle on left and center
-    else if (cm_R >= 60 && cm_C < 60 && cm_L < 60)
-    {
-     stop();
-     backward();
-     delay(1500);
-     left();
-    }
-    //obstacle on right and center
-    else if (cm_L >= 60 && cm_C < 60 && cm_R < 60)
-    {
-     stop();
-     backward();
-     delay(1500);
-     right();
-    }
-    //obstacle on right
-    else if (cm_L >= 60 && cm_C >= 60 && cm_R < 60)
-    {
-     left();
-     left();
-    }
-    //obstacle on left
-    else if (cm_R >= 60 && cm_C >= 60 && cm_L < 60)
-    {
-     right();
-     right();
-    }
-   
-  //obstacle(s) within 60cm-120cm range
-   
-    //obstacle on left and center
-    else if (cm_R >= 120 && cm_C < 120 && cm_L < 120)
-    {
-     right();
-     right();
-    }
-    //obstacle on right and center
-    else if (cm_L >= 120 && cm_C < 120 && cm_R < 120)
-    {
-     left();
-     left();
-    }
-    //obstacle on right and left
-    else if (cm_C >= 120 && cm_L < 120 && cm_R < 120)
-    {
-     forward();
-    }
-    //obstacle on right
-    else if (cm_L >= 120 && cm_C >= 120 && cm_R < 120)
-    {
-     left();
-    }
-    //obstacle on left
-    else if (cm_R >= 120 && cm_C >= 120 && cm_L < 120)
-    {
-     right();
-    }
-    //obstacle on center
-    else if (cm_L >= 120 && cm_R >= 120 && cm_C < 120)
-    {
-     if(j % 2 == 0){
-       left();
-       j=1;
-     }
-     else{
-       right();
-      }
-    }  
+      avoid_obstacles();
+      j=r;
     }
     
-    //Send data via I2C to TREX
-    
+    // Send data via I2C to TREX
     MasterSend(startbyte,2,lmspeed,lmbrake,rmspeed,rmbrake,sv[0],sv[1],sv[2],sv[3],sv[4],sv[5],devibrate,sensitivity,lowbat,i2caddr,i2cfreq);
     delay(50);
-    MasterReceive();                                   // receive data packet from T'REX controller
+    
+    // Receive data packet from T'REX controller
+    MasterReceive();                                   
     delay(50);
+    
+    // Work with received data
+    if (volts<591)
+    {
+      low_voltage();
+    }                                                 // Trigger low voltage alert and stop
+    
+    magnitude=sqrt(sq(deltx)+sq(delty)+sq(deltz));    //If impact detected, calculate the magnitude of impact
+    if (magnitude>sensitivity)
+    {
+      resolve_impact();
+    }                                                //Determines cause of impact and takes corrective action
+    
+    if (lmcur>39000 || rmcur>39000)                  //If motor current --> stall current (The TREX motor controller is rated for 40A stall current)
+    {
+      stall_prevention();
+    }                                                //Prevents motor stall
     
     
     

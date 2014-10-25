@@ -33,47 +33,58 @@ void MasterReceive()
   Serial.println(Wire.read(),DEC);
   
   i=Wire.read()*256+Wire.read();                                  // T'REX battery voltage
+  volts=i;
   Serial.print("Battery Voltage:\t");
   Serial.print(int(i/10));Serial.println(".");                      
   Serial.print(i-(int(i/10)*10));Serial.println("V");
   
   i=Wire.read()*256+Wire.read();
-  Serial.print("Left  Motor Current:\t");
+  lmcur=i;
+  Serial.print("Leading  Motor Current:\t");
   Serial.print(i);Serial.println("mA");                           // T'REX left  motor current in mA
   
   i=Wire.read()*256+Wire.read();
-  Serial.print("Left  Motor Encoder:\t");
+  lmenc=i;
+  Serial.print("Leading  Motor Encoder:\t");
   Serial.println(i);                                              // T'REX left  motor encoder count
   
   i=Wire.read()*256+Wire.read();
-  Serial.print("Right Motor Current:\t");
+  rmcur=i;
+  Serial.print("Rear Motor Current:\t");
   Serial.print(i);Serial.println("mA");                           // T'REX right motor current in mA
   
   i=Wire.read()*256+Wire.read();
-  Serial.print("Right Motor Encoder:\t");
+  rmenc=i;
+  Serial.print("Rear Motor Encoder:\t");
   Serial.println(i);                                              // T'REX right motor encoder count
   
   i=Wire.read()*256+Wire.read();
+  xaxis=i;
   Serial.print("X-axis:\t\t");
   Serial.println(i);                                              // T'REX X-axis
   
   i=Wire.read()*256+Wire.read();
+  yaxis=i;
   Serial.print("Y-axis:\t\t");
   Serial.println(i);                                              // T'REX Y-axis
   
   i=Wire.read()*256+Wire.read();
+  zaxis=i;
   Serial.print("Z-axis:\t\t");
   Serial.println(i);                                              // T'REX Z-axis
   
   i=Wire.read()*256+Wire.read();
+  deltx=i;
   Serial.print("X-delta:\t\t");
   Serial.println(i);                                              // T'REX X-delta
   
   i=Wire.read()*256+Wire.read();
+  delty=i;
   Serial.print("Y-delta:\t\t");
   Serial.println(i);                                              // T'REX Y-delta
   
   i=Wire.read()*256+Wire.read();
+  deltz=i;
   Serial.print("Z-delta:\t\t");
   Serial.println(i);                                              // T'REX Z-delta
   Serial.print("\r\n\n\n");
