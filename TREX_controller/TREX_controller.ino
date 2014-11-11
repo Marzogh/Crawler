@@ -24,7 +24,7 @@
 
 // define global variables here
 byte mode=0;                                           // mode=0: I2C / mode=1: Radio Control / mode=2: Bluetooth / mode=3: Shutdown
-int  lowbat=550;                                       // default low battery voltage is 5.5V
+int  lowbat=1116;                                      // default low battery voltage is 5.5V
 byte errorflag;                                        // non zero if bad data packet received
 byte pwmfreq;                                          // value from 1-7
 byte i2cfreq;                                          // I2C clock frequency can be 100kHz(default) or 400kHz

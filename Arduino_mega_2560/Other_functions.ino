@@ -1,45 +1,69 @@
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+  //                                                                                                                                                                                                                                    //
+  //                                                                                                       Miscellaneous functions                                                                                                      //
+  //                                                                                                                                                                                                                                    //
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+ void startSensors()
+ {  
+  // Setup the sensor gain and integration time.
+  configureIMU();
+  //Setup GPS
+  configureGPS();                                      //Configures GPS
+ }
+ 
 // React to low voltage
-void low_voltage()
+void batteryCheck()
 {
-  stop();
-  beep();
+  if (volts=lowbat)
+      {
+        halt();
+        //beep();
+        loopForever();
+      }                                                 // Trigger low voltage alert and stop
+      
 }
 
 // Resolve an impact
 void resolve_impact()
 {
-     stop();
+     halt();
      backward();
      delay(1500);
-     stop();
+     halt();
        if(r%3 == 0) //This if/else statement is designed to build a little "randomness"
        { 
-       backward();
-       right(); //into the robot's movements, so it is less likely to become stuck
-       right(); //in a loop, performing the same actions over and over which only.
-       stop();
-       left();
+       turnRightRev(); //into the robot's movements, so it is less likely to become stuck
        delay(750);
-       forward();
+       halt();
+       turnLeft();
+       delay(750);
+       turnStraight();
        r=1;
        }
      else
      {
        backward();
-       left();
-       left();
-       stop();
-       right();
+       turnLeftRev();
+       turnLeftRev();
+       halt();
+       turnRight();
        delay(750);
-       forward();
+       turnStraight();
        }
 }
 
 // Prevent motor stall
 void stall_prevention()
 {
-  stop();
+  halt();
   delay(1500);
-  forward();
+  turnStraight();
+}
+
+// End of program routine, loops forever
+void loopForever(void)
+{
+  while (1);
 }
