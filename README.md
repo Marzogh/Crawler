@@ -1,4 +1,4 @@
-The-Crawler-Project
+The Crawler Project
 ===================
 
 This is an autonomously navigating robot built around a Maxstone/HSP 1/5th size RC Rock Crawler chassis.
