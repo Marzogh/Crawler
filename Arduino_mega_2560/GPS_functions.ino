@@ -37,7 +37,7 @@ void configureGPS()
   useInterrupt(true);                                                          // The nice thing about this code is you can have a timer0 interrupt go off every 1 millisecond, and read data from the GPS for you. That makes the
                                                                                // loop code a heck of a lot easier!
   delay(1000);
-  //mySerial.println(PMTK_Q_RELEASE);                                            // Ask for firmware version
+  //mySerial1.println(PMTK_Q_RELEASE);                                            // Ask for firmware version
   
   //Wait for GPS to get a fix
   unsigned long startTime = millis();
