@@ -6,5 +6,8 @@
 
 void readCommand()
 {
+  if(!radio)
+    loopForever();
+  else
   
 }

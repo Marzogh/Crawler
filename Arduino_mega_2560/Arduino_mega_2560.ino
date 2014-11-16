@@ -79,6 +79,10 @@
   int distanceToTarget,                                // Current distance to target (current waypoint)
       originalDistanceToTarget;                        // Distance to original waypoint when we started navigating to it
       
+      
+  //Radio variables
+  HardwareSerial radio = Serial;
+      
  
  // Waypoints
   #define WAYPOINT_DIST_TOLERANCE  5                   // Tolerance in meters to waypoint; once within this tolerance, will advance to the next waypoint
