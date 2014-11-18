@@ -5,8 +5,20 @@ A. The Chassis
 	•	1/5th scale AWD Rock crawler with foam filled tyres, adjustable suspension, waterproof front steering servo with RC receiver and ESC removed. 
 	•	Purchased from HobbyWarehouse here —> https://www.hobbywarehouse.com.au/rc-cars-1-5-rock-crawlers.html
 
-B. The Electronics
+B. The Electronics (on the Crawler)
 
 	•	Arduino Mega 2560 x1
 	•	HR-SCO4 Ultrasonic range sensor x3
 	•	TREX robot controller board x1
+	•	Adafruit Ultimate GPS Breakout - 66 channel w/10 Hz updates v.3 x1
+	•	Adafruit 9-DOF Accel/Mag/Gyro+Temp Breakout Board - LSM9DS0 x1
+	•	White LED Backlight Module - Small 12mm x 40mm x2
+	•	Ciseco XRF Radio x1
+	•	Ciseco XBBO Breakout board (Active) x1
+
+B. The Electronics (on the RC controller)
+	•	DFRobot Input Shield For Arduino v2.0 x1
+	•	Ciseco XRF Radio x1
+	•	Seeeduino Arduino Mega-compatible board x1
+	•	PowerBoost 500 Charger - Rechargeable 5V Lipo USB Boost @ 500mA+ x1
+	•	LiPo Battery 1000mAh x1
