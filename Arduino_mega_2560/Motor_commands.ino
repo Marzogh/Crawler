@@ -13,6 +13,7 @@
        else
          lmspeed, rmspeed = TURN_SPEED;
        lmbrake, rmbrake=0;                         // Turns off brakes
+       setServos();
        updateTREX();
      }
   
