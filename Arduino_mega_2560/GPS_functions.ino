@@ -56,8 +56,9 @@ void readGPS()                                                               // 
   if (! usingInterrupt)                                                      // In case you are not using the interrupt above, you'll need to 'hand query' the GPS (Not recommended)        
   {
     char c = GPS.read();                                                     // Read data from the GPS in the 'main loop'
-    if (DEBUG)                                                               // If you want to debug, this is a good time to do it!
+    #if DEBUG                                                               // If you want to debug, this is a good time to do it!
       if (c) Serial1.print(c);
+    #endif
   }
   
   // if a sentence is received, we can check the checksum, parse it...
@@ -114,20 +115,41 @@ void readGPS()                                                               // 
 
 void nextWaypoint(void)
 {
-  waypointNumber++;
-  targetLat = waypointList[waypointNumber].getLat();
-  targetLong = waypointList[waypointNumber].getLong();
-  
-  if ((targetLat == 0 && targetLong == 0) || waypointNumber >= NUMBER_WAYPOINTS)    // last waypoint reached? 
-    {
-      halt();    // make sure we stop
-      centerServos();
-      loopForever();
-    }
+  if (mode==0 || mode==2)
+  {
+    waypointNumber++;
+    targetLat = waypointList[waypointNumber].getLat();
+    targetLong = waypointList[waypointNumber].getLong();
     
-   processGPS();
-   distanceToTarget = originalDistanceToTarget = distanceToWaypoint();
-   courseToWaypoint();
+    if ((targetLat == 0 && targetLong == 0) || waypointNumber >= NUMBER_WAYPOINTS)    // last waypoint reached? 
+      {
+        halt();    // make sure we stop
+        centerServos();
+        loopForever();
+      }
+      
+     processGPS();
+     distanceToTarget = originalDistanceToTarget = distanceToWaypoint();
+     courseToWaypoint();
+  }
+  if (mode==1)
+  {
+    int homeWaypointNumber = -1;
+    homeWaypointNumber++;
+    targetLat = homeLocation[homeWaypointNumber].getLat();
+    targetLong = homeLocation[homeWaypointNumber].getLong();
+    
+    if ((targetLat == 0 && targetLong == 0) || homeWaypointNumber >= NUMBER_HOME_WAYPOINTS)    // last waypoint reached? 
+      {
+        halt();    // make sure we stop
+        centerServos();
+        loopForever();
+      }
+      
+     processGPS();
+     distanceToTarget = originalDistanceToTarget = distanceToWaypoint();
+     courseToWaypoint();
+  }
 }
 
 // Returns distance in meters between two positions, both specified as signed decimal-degrees latitude and longitude. Uses great-circle 
@@ -216,3 +238,18 @@ void processGPS(void)
   distanceToWaypoint();
   courseToWaypoint();
 }
+
+void setHome()
+{
+  readGPS();
+  
+  //convert lat/long from degree-min to decimal-degrees; requires <math.h> library
+  currentLat = convertDegMinToDecDeg(GPS.latitude);
+  currentLong = convertDegMinToDecDeg(GPS.longitude);
+             
+  if (GPS.lat == 'S')            // make them signed
+    homeLat = -homeLat;
+  if (GPS.lon = 'W')  
+    homeLong = -homeLong;
+}
+  

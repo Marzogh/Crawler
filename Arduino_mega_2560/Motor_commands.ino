@@ -7,17 +7,18 @@
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   
   void forward()
-     {                                    // Turns on drive motor in forward and leaves it on
+     {                                              // Turns on drive motor in forward and leaves it on
        if (turnDirection == straight)
          lmspeed, rmspeed = FAST_SPEED;
        else
          lmspeed, rmspeed = TURN_SPEED;
        lmbrake, rmbrake=0;                         // Turns off brakes
+       setServos();
        updateTREX();
      }
   
   void backward()
-     {                                    // Turns on drive motor in reverse and leaves it on
+     {                                              // Turns on drive motor in reverse and leaves it on
        turnDirection = straight;
        lmspeed, rmspeed = -NORMAL_SPEED;
        lmbrake, rmbrake=0;                         // Turns off brakes
@@ -64,13 +65,13 @@
   void turnStraight()
   {
       turnDirection = straight;
-      lmspeed, rmspeed = TURN_SPEED;
+      lmspeed, rmspeed = NORMAL_SPEED;
       lmbrake, rmbrake=0;                         // Turns off brakes
       setServos();
       updateTREX();
   }
   
-  void halt()                            // Brakes and stops both motors
+  void halt()                                    // Brakes and stops both motors
     {
       lmbrake=(abs(lmspeed));
       rmbrake=(abs(rmspeed));
@@ -79,9 +80,9 @@
      
   void setServos()
     {
-      for(byte i=0;i<s_no;i++)          // Max value of i should be < total number of servos
+      for(byte i=0;i<s_no;i++)                  // Max value of i should be < total number of servos
         {
-          if(sv[i]!=0)                     // If servo is attached
+          if(sv[i]!=0)                          // If servo is attached
           {
             if (turnDirection == straight)
               sv[i]=TURN_STRAIGHT;
@@ -95,9 +96,9 @@
     
   void centerServos()
     {
-      for(byte i=0;i<s_no;i++)          // Max value of i should be < total number of servos
+      for(byte i=0;i<s_no;i++)                 // Max value of i should be < total number of servos
         {
-          if(sv[i]!=0)                     // If servo is attached
+          if(sv[i]!=0)                         // If servo is attached
             sv[i]=TURN_STRAIGHT;
         }
     }
@@ -105,13 +106,13 @@
   void slowDown()
     {
       lmspeed, rmspeed = SLOW_SPEED;
-      lmbrake, rmbrake=0;                         // Turns off brakes
+      lmbrake, rmbrake=0;                       // Turns off brakes
       updateTREX();
     }
     
   void reduceSpeed()
     {
       lmspeed, rmspeed = NORMAL_SPEED;
-      lmbrake, rmbrake=0;                         // Turns off brakes
+      lmbrake, rmbrake=0;                       // Turns off brakes
       updateTREX();
     }

@@ -8,9 +8,12 @@
  //                                                               .||.   .||  || `|...     `|....' .||.   `|..||.    \/\/    .||. `|...  .||.      .||      .||.   `|..|'    || `|...  `|..'   `|..'                                                                            //
  //                                                                                                                                                                                                                                                                             //
  //                                                                              An autonomous rover designed and built around a 1/5th Rock Crawler chasis by Prajwal Bhattaram                                                                                                 //
- //                                                                                                                   v.0.3.3-alpha                                                                                                                                             //
+ //                                                                                                                   v.0.5.0-beta                                                                                                                                              //
  //                                                                                                                    21.Oct.2014                                                                                                                                              //
  //                                                                                                   https://github.com/Marzogh/The-Crawler-Project                                                                                                                            //
+ //                                                                                                                                                                                                                                                                             //
+ //                                                                                                      The Autonomous Ground Vehicle controller                                                                                                                               //
+ //                                                                                                                                                                                                                                                                             // 
  // ==========================================================================================================================================================================================================================================================================  //                                                                                                                             
   
   //Libraries
@@ -75,14 +78,28 @@
   float currentLat,
         currentLong,
         targetLat,
-        targetLong;
+        targetLong,
+        homeLat,
+        homeLong;
   int distanceToTarget,                                // Current distance to target (current waypoint)
       originalDistanceToTarget;                        // Distance to original waypoint when we started navigating to it
+      
+      
+  //Radio variables
+  HardwareSerial radio = Serial;                       // Connect radio to Serial port
+  #define COMMANDSIZE 19                               // Defines the size of the command packet
+  char commandChar=':';                                // Sets command character
+  char terminalChar='\r';                              // Sets end character
+  boolean storeString=false;
+  char commandRead[COMMANDSIZE+1];                     // Char array to store string from radio
+  int command[]={0,0,0,0,0,0};                         // Int array to store parsed output from radio
+  int mode=command[2];                                 // Sets running mode
       
  
  // Waypoints
   #define WAYPOINT_DIST_TOLERANCE  5                   // Tolerance in meters to waypoint; once within this tolerance, will advance to the next waypoint
   #define NUMBER_WAYPOINTS 5                           // Enter the number of way points here (will run from 0 to (n-1))
+  #define NUMBER_HOME_WAYPOINTS 1                      // Reserved for future use where multiple homes could exist and the Crawler has to choose the closest. (will run from 0 to (n-1))
   int waypointNumber = -1;                             // Current waypoint number; will run from 0 to (NUMBER_WAYPOINTS -1); start at -1 and gets initialized during setup()
   waypoint waypointList[NUMBER_WAYPOINTS] = 
   {
@@ -91,6 +108,10 @@
     waypoint(30.507715, -97.832357), 
     waypoint(30.508422, -97.832760), 
     waypoint(30.508518, -97.832665) 
+  };
+  waypoint homeLocation[NUMBER_HOME_WAYPOINTS] =       // This is where the home waypoint will be set
+  { 
+    waypoint(homeLat, homeLong)
   };
 
  
@@ -120,8 +141,8 @@
   int sv[6]={1500,0,0,0,0,0};                          // servo positions: 0 = Not Used
   //int sd[6]={5,10,-5,-15,20,-20};                      // servo sweep speed/direction (Only if sweeping servos are required
   int lmspeed,rmspeed;                                 // left and right motor speed from -255 to +255 (negative value = reverse)
-  int ldir=5;                                          // how much to change leading  motor speed each loop (use for motor testing)
-  int rdir=5;                                          // how much to change rear motor speed each loop (use for motor testing)
+  //int ldir=5;                                          // how much to change leading  motor speed each loop (use for motor testing)
+  //int rdir=5;                                          // how much to change rear motor speed each loop (use for motor testing)
   byte lmbrake,rmbrake;                                // leading and rear motor brake (non zero value = brake)
   byte devibrate=50;                                   // time delay after impact to prevent false re-triggering due to chassis vibration
   int sensitivity=50;                                  // threshold of acceleration / deceleration required to register as an impact
@@ -187,39 +208,33 @@
     #if DEBUG
     Serial1.begin(115200);
     #endif
-    Serial.begin(115200);
+    radio.begin(115200);
     Wire.begin();
-    batteryCheck();                                      //Check for low battery
+    batteryCheck();                                         //Check for low battery
     startSensors();
+    setHome();
+    
+    waitForRadio();                                        //Wait for radio command
+    parseCommand();                                        //If radio command has been read, then parse the command
+    while (!IO)
+    break;  
     
   }
   
   void loop()
-  { 
-    readSensors();
-    moveAndDodge();
-    //updateTREX();
-    delay(50);
+  {
+    while (mode=0)                                         //Radio commands autonomous navigation
+    {
+      autoNavigate();
+    }
     
-    if(alternate)
+    while (mode==1)                                        //Radio commands Return to Home
     {
-      readCommand();
+      returnHome();
     }
-    else
+    
+    while (mode==2)                                        //Radio commands RC navigation
     {
-      // Receive data packet from T'REX controller
-      MasterReceive();                                   
-      delay(50);
-      // Work with received data
-      magnitude=sqrt(sq(deltx)+sq(delty)+sq(deltz));    //If impact detected, calculate the magnitude of impact
-      
-      batteryCheck();                                   //Check battery voltage and turn off if voltage = cutoff
-      
-      if (lmcur>30000 || rmcur>30000)                   //If motor current --> stall current (The TREX motor controller is rated for 40A stall current)
-        stall_prevention();                             //Prevents motor stall
-      
-      if (magnitude>sensitivity)
-        resolve_impact();                               //Determines cause of impact and takes corrective action
+      radioControl();
     }
-    alternate=alternate^1;
   }
