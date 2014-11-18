@@ -66,7 +66,13 @@
     
     if(alternate)
     {
-      parseCommand();                                  //Check Radio for any updates
+      parseCommand();                                    //Check Radio for any updates
+      if (!IO)
+       {
+         halt();                                          // Make sure we stop
+         centerServos();                                  // Center Servos
+         loopForever();                                   // Keep looping till IO = true
+       }
     }
     else
     {
@@ -102,6 +108,12 @@
     if(alternate)
     {
       parseCommand();
+      if (!IO)
+       {
+         halt();                                          // Make sure we stop
+         centerServos();                                  // Center Servos
+         loopForever();                                   // Keep looping till IO = true
+       }
     }
     else
     {
@@ -132,8 +144,15 @@
     for(byte i=0;i<s_no;i++)                           // Max value of i should be < total number of servos
     {
       if(sv[i]!=0)                                     // If servo is attached
-      sv[i]=command[5];                                       // Set servo direction
+      sv[i]=command[5];                                // Set servo direction
     }
    updateTREX();
    parseCommand();
+   
+   if (!IO)
+   {
+     halt();                                          // Make sure we stop
+     centerServos();                                  // Center Servos
+     loopForever();                                   // Keep looping till IO = true
+   }
   }

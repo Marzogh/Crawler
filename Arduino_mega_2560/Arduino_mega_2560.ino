@@ -88,9 +88,9 @@
   char commandChar=':';                                // Sets command character
   char terminalChar='\r';                              // Sets end character
   boolean storeString=false;
-  char commandRead[COMMANDSIZE+1];                    // Char array to store string from radio
-  int command[]={0,0,0,0,0,0};                        // Int array to store parsed output from radio
-  int mode=command[2];                                // Sets running mode
+  char commandRead[COMMANDSIZE+1];                     // Char array to store string from radio
+  int command[]={0,0,0,0,0,0};                         // Int array to store parsed output from radio
+  int mode=command[2];                                 // Sets running mode
       
  
  // Waypoints
@@ -207,12 +207,12 @@
     #endif
     radio.begin(115200);
     Wire.begin();
-    batteryCheck();                                      //Check for low battery
+    batteryCheck();                                         //Check for low battery
     startSensors();
     setHome();
     
-    waitForRadio();                                      //Wait for radio command
-    parseCommand();                                      //If radio command has been read, then parse the command
+    waitForRadio();                                        //Wait for radio command
+    parseCommand();                                        //If radio command has been read, then parse the command
     while (!IO)
     break;  
     
@@ -220,17 +220,17 @@
   
   void loop()
   {
-    if (mode=0)                                          //Radio commands autonomous navigation
+    while (mode=0)                                         //Radio commands autonomous navigation
     {
       autoNavigate();
     }
     
-    if (mode==1)                                          //Radio commands Return to Home
+    while (mode==1)                                        //Radio commands Return to Home
     {
       returnHome();
     }
     
-    if (mode==2)                                          //Radio commands RC navigation
+    while (mode==2)                                        //Radio commands RC navigation
     {
       radioControl();
     }
