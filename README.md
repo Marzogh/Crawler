@@ -9,11 +9,11 @@ Please feel free to take the code and modify it for use in your robots. Just mak
 
 #First Beta Release
 
-# Release notes
+### Release notes
 
 This is the first beta release that compiles without bugs.
 
-## New in this version
+#### New in this version
 - Ability to record home location
 - Radio controlled remote on/remote kill switch
 - 3 modes of operation (Autonomous, RC and Return to Home)
