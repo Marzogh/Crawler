@@ -1,4 +1,20 @@
 
+ // ==========================================================================================================================================================================================================================================================================  //
+ //                                                                                                                                                                                                                                                                             //
+ //                                                             |''||''| '||               .|'''',                           '||`                  '||'''|,                                    ||                                                                               //
+ //                                                                ||     ||               ||                                 ||                    ||   ||                  ''                ||                                                                               //
+ //                                                                ||     ||''|, .|''|,    ||      '||''|  '''|.  '\\    //`  ||  .|''|, '||''|     ||...|' '||''| .|''|,    || .|''|, .|'', ''||''                                                                             //
+ //                                                                ||     ||  || ||..||    ||       ||    .|''||    \\/\//    ||  ||..||  ||        ||       ||    ||  ||    || ||..|| ||      ||                                                                               //
+ //                                                               .||.   .||  || `|...     `|....' .||.   `|..||.    \/\/    .||. `|...  .||.      .||      .||.   `|..|'    || `|...  `|..'   `|..'                                                                            //
+ //                                                                                                                                                                                                                                                                             //
+ //                                                                              An autonomous rover designed and built around a 1/5th Rock Crawler chasis by Prajwal Bhattaram                                                                                                 //
+ //                                                                                                                   v.0.1.0-beta                                                                                                                                              //
+ //                                                                                                                    21.Oct.2014                                                                                                                                              //
+ //                                                                                                   https://github.com/Marzogh/The-Crawler-Project                                                                                                                            //
+ //                                                                                                                                                                                                                                                                             //
+ //                                                                                                                   The Radio Controller                                                                                                                                      //
+ //                                                                                                                                                                                                                                                                             // 
+ // ==========================================================================================================================================================================================================================================================================  // 
 
 #define up_button	8                                         // Button power
 #define down_button	A1                                        // Button go
@@ -7,15 +23,15 @@
 
 #define stick_button	A0                                        // Button stick
 #define level_stick	A2                                        // Steering
-#define vertical_stick	A3                                        // Speed 
-//#define NUMBUTTONS sizeof(buttons)                                // Gets size of (buttons) array
+#define vertical_stick	A3                                        // Speed
 #define DEBOUNCE 10                                               // Set debounce time (10ms in this case)
 
 HardwareSerial radio = Serial;                                    // Connect radio to Serial port
 
 int IO, mode, spd, brk, dir, res = 0;                             // Variables sent to crawler
 int RTH, RC, power, Auto, setHome, steering, speed;               // Variables on controller
-int previousRTH, previousRC, previousPower, previousAuto, previousSetHome = HIGH;    // the previous reading from the input pin
+int previousRTH, previousRC, previousPower,
+    previousAuto, previousSetHome = HIGH;    // the previous reading from the input pin
 long prevtime, time = 0;
 
 void setup () 
@@ -31,7 +47,7 @@ void setup ()
   pinMode (level_stick   , INPUT);
   pinMode (vertical_stick, INPUT);
   
-  readButtons();
+  readInputs();
   powerCheck();
   modeCheck();
   transmitCommand();
@@ -73,14 +89,14 @@ void loop ()
       prevtime = millis();
     }
     transmitCommand();
-    readButtons();
+    readInputs();
     powerCheck();
     modeCheck();
   }
   
   while (mode == 1 || mode == 2)
   {
-    readButtons();
+    readInputs();
     powerCheck();
     modeCheck();
     

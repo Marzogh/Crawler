@@ -12,38 +12,38 @@ boolean readCommand()
     char incomingbyte = radio.read();
     if (incomingbyte==commandChar)
     {
-      commandIndex=0;                                  //Initialize the commandIndex variable
+      commandIndex=0;                                        // Initialize the commandIndex variable
       storeString=true;
     }
     
     if (storeString)
     {
-      if (commandIndex==COMMANDSIZE)                    //Check index and abort in case of buffer overflow
+      if (commandIndex==COMMANDSIZE)                        // Check index and abort in case of buffer overflow
       {
         commandIndex=0;
         break;
       }
       
-      if (incomingbyte==terminalChar)                    //Data string is complete
+      if (incomingbyte==terminalChar)                       // Data string is complete
       {
-        commandRead[commandIndex]=0;                         //Null terminate the C String
+        commandRead[commandIndex]=0;                        // Null terminate the C String
         
         storeString=false;
-        commandIndex=0;                                  //Reset storeString and commandIndex
+        commandIndex=0;                                     // Reset storeString and commandIndex
         
-        return true;                                     //Our data string is complete
+        return true;                                        // Our data string is complete
       }
       else
       {
         commandRead[commandIndex++]=incomingbyte;
-        commandRead[commandIndex]=0;                           //Null terminate the C String
+        commandRead[commandIndex]=0;                        // Null terminate the C String
       }
     }
     else
     {
     }
   }
-  return false;
+  return false;                                             // String is yet to be completely read
 }
 
 
@@ -58,7 +58,7 @@ void parseCommand()
       
       for (int i=0; i<5; i++)
       {
-        command[i]=atoi(valPosition);                    // Set to atol for longs, atof for floats
+        command[i]=atoi(valPosition);                      // Set to atol for longs, atof for floats
         #if DEBUG
         Serial1.println(command[i]);
         #endif
@@ -83,7 +83,7 @@ void parseCommand()
 
 void waitForRadio()
 {
- if (!readCommand)                                    //Wait for radio command
+ if (!readCommand)                                       //Wait for radio command
     {
       #if DEBUG
       int w=0;
