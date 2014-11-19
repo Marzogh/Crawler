@@ -24,6 +24,6 @@
     distL = sonarL.ping_cm();                   // get distqnce in cms from the sensor
     if (distL == 0)                                // if too far to measure, return max distance;
       distL = MAX_DISTANCE_CM;  
-    sonarDistance_L = sonarRAverage.add(distL);      // add the new value into moving average, use resulting average
+    sonarDistance_L = sonarLAverage.add(distL);      // add the new value into moving average, use resulting average
     delay(2);
   } // checkSonar()
