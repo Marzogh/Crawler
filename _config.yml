@@ -2,7 +2,7 @@
 
 title: Site Title
 locale: en_US
-description: Describe your website here.
+description: The Crawler Project.
 logo: site-logo.png
 search: true
 url: 
@@ -32,9 +32,9 @@ exclude: ["lib", "config.rb", "Capfile", "config", "log", "Rakefile", "Rakefile.
 
 # Site owner
 owner:
-  name: Your Name
+  name: Marzogh
   avatar: bio-photo.jpg
-  email: you@email.com
+  email: marzogh@icloud.com.com
   disqus-shortname:
   twitter: #username
   facebook: #username
