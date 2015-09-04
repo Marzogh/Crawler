@@ -5,22 +5,14 @@
   //                                                                                                                                                                                                                                    //
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
- void startSensors()
- {  
-  // Setup the sensor gain and integration time.
-  configureIMU();
-  //Setup GPS
-  configureGPS();                                      //Configures GPS
- }
- 
 // React to low voltage
 void batteryCheck()
 {
-  if (volts=lowbat)
+  if (volts <= lowbat)
       {
         halt();
         //beep();
-        loopForever();
+        while(1);
       }                                                 // Trigger low voltage alert and stop
       
 }
@@ -30,15 +22,15 @@ void resolve_impact()
 {
      halt();
      backward();
-     delay(1500);
+     smartDelay(1500);
      halt();
        if(r%3 == 0) //This if/else statement is designed to build a little "randomness"
        { 
        turnRightRev(); //into the robot's movements, so it is less likely to become stuck
-       delay(750);
+       smartDelay(750);
        halt();
        turnLeft();
-       delay(750);
+       smartDelay(750);
        turnStraight();
        r=1;
        }
@@ -49,7 +41,7 @@ void resolve_impact()
        turnLeftRev();
        halt();
        turnRight();
-       delay(750);
+       smartDelay(750);
        turnStraight();
        }
 }
@@ -58,12 +50,6 @@ void resolve_impact()
 void stall_prevention()
 {
   halt();
-  delay(1500);
+  smartDelay(1500);
   turnStraight();
-}
-
-// End of program routine, loops forever
-void loopForever(void)
-{
-  while (1);
 }

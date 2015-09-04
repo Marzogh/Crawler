@@ -37,7 +37,7 @@
       Serial1.print(F("Ooops, no LSM9DS0 detected ... Check your wiring or I2C ADDR!"));
       #endif
       Serial.print("@#9DS0!");
-      loopForever();
+      while(1);
     }
   }
   
@@ -82,5 +82,5 @@
       //return ((int)headingDegrees);
     }
     
-    delay(100);
+    smartDelay(100);
   }
