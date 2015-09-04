@@ -18,6 +18,8 @@
   
   //Libraries
   #include <Wire.h>                                       // Used by: T-Rex & IMU
+  #include <SabertoothSimplified.h>                       // Used by: Sabertooth 2x12
+  #include <Servo.h>                                      // Used by: Steering servo
   #include <SPI.h>                                        // Used by: GPS
   #include <Adafruit_Sensor.h>                            // Used by: IMU
   #include <Adafruit_LSM9DS0.h>                           // Used by: IMU
@@ -28,7 +30,6 @@
   #include "Waypoint_class.h"                             // Custom class to manage GPS waypoints
   #include <math.h>                                       // Used by: GPS
   #include "moving_average.h"                             // Simple moving average class; for Sonar functionality
- 
   
   //Definitions
   #define startbyte 0x0F
@@ -74,6 +75,7 @@
   Adafruit_GPS GPS(&mySerial);
                                                        // Set to 'true' if you want to debug and listen to the raw GPS sentences. 
   boolean usingInterrupt = false;                      // This keeps track of whether we're using the interrupt (off by default!)
+  
   // GPS navigation variables
   float currentLat,
         currentLong,
@@ -116,11 +118,12 @@
 
  
  // Steering/turning 
-  #define TURN_LEFT 1000
-  #define TURN_RIGHT 2000
-  #define TURN_STRAIGHT 1500
+  #define TURN_LEFT 1
+  #define TURN_RIGHT 179
+  #define TURN_STRAIGHT 90
   enum directions {left=1000, right=2000, straight=1500} ;
   directions turnDirection = straight;
+  Servo steering;                                      // create servo object to control a servo 
   
   
   // Object avoidance distances (in cms)
@@ -135,8 +138,15 @@
   #define TURN_SPEED 125
   #define SLOW_SPEED 75
   int speed = NORMAL_SPEED;
- 
   
+  // Sabertooth variables
+  SoftwareSerial engine(NOT_A_PIN, 11);                // RX on no pin (unused), TX on pin 11 (to S1).
+  SabertoothSimplified ST(engine);                     // Use SWSerial as the serial port.
+  int lmspeed,rmspeed;                                 // left and right motor speed from 1 to 255 (0 = halt; 1-127 --> left motor --> full rev-full forward;  128-255 --> right motor --> full rev-full forward)
+  int s_no=1;                                          //Indicates number of servos
+  int sv[6]={1500,0,0,0,0,0};                          // servo positions: 0 = Not Used
+ 
+  /*---------------------------------------------------------------------------------- Uncomment if using a TREX Controller ----------------------------------------------------------------------------------//
   //TREX MasterSend variables
   int sv[6]={1500,0,0,0,0,0};                          // servo positions: 0 = Not Used
   //int sd[6]={5,10,-5,-15,20,-20};                      // servo sweep speed/direction (Only if sweeping servos are required
@@ -159,13 +169,14 @@
   int xaxis,yaxis,zaxis;                                 // X, Y, Z accelerometer readings
   int deltx,delty,deltz;                                 // X, Y, Z impact readings 
   int magnitude;                                         // impact magnitude
-  
+  //---------------------------------------------------------------------------------- Uncomment if using a TREX Controller ----------------------------------------------------------------------------------*/  
   //Variables for calculations & debugging
   #define DEBUG false                                    //Set to true if you want to debug the microprocessor code & sensor outputs 
   static byte alternate;
   int battType=1;                                        //Change to match battery type - 1.LiPo/LiIon 2.NiMH
   int cellNo=3;                                          //Change to match no. of cells in battery
-  
+  int lowbat, volts;
+
   
   
   /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Interrupt code for GPS begins~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -218,7 +229,8 @@
     parseCommand();                                        //If radio command has been read, then parse the command
     while (!IO)
     break;  
-    
+    engine.begin(38400);                                   //If (IO) then start serial comms to the motors
+    steering.attach(9);                                    // attaches the servo on pin 9 to the servo object 
   }
   
   void loop()

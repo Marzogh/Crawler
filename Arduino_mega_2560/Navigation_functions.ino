@@ -20,8 +20,9 @@
     if (headingError <= 0)
     turnDirection = left;
     else
-    turnDirection = right;setServos();                                                            // turn in the new direction
-    updateTREX();
+    turnDirection = right;
+    setServos();                                                            // turn in the new direction
+    //updateTREX();
   }
   
    void readSensors()
@@ -76,7 +77,7 @@
     }
     else
     {
-      // Receive data packet from T'REX controller
+      /* // Receive data packet from T'REX controller
       MasterReceive();                                   
       delay(50);
       // Work with received data
@@ -88,7 +89,7 @@
         stall_prevention();                             //Prevents motor stall
        
       if (magnitude>sensitivity)
-        resolve_impact();                               //Determines cause of impact and takes corrective action
+        resolve_impact();                               //Determines cause of impact and takes corrective action */
     }
     alternate=alternate^1;
   }
@@ -117,7 +118,7 @@
     }
     else
     {
-      // Receive data packet from T'REX controller
+    /*  // Receive data packet from T'REX controller
       MasterReceive();                                   
       delay(50);
       // Work with received data
@@ -129,7 +130,7 @@
         stall_prevention();                             //Prevents motor stall
       
       if (magnitude>sensitivity)
-        resolve_impact();                               //Determines cause of impact and takes corrective action
+        resolve_impact();                               //Determines cause of impact and takes corrective action */
     }
     alternate=alternate^1;
   }
@@ -140,13 +141,13 @@
     Serial1.println("Switched to Radio Control");
     #endif
     lmspeed, rmspeed = command[3];
-    lmbrake, rmbrake = command[4];
+    //lmbrake, rmbrake = command[4];                     //Only to be used for TREX
     for(byte i=0;i<s_no;i++)                           // Max value of i should be < total number of servos
     {
       if(sv[i]!=0)                                     // If servo is attached
       sv[i]=command[5];                                // Set servo direction
     }
-   updateTREX();
+   updateSabertooth();
    parseCommand();
    
    if (!IO)

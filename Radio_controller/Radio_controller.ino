@@ -26,7 +26,7 @@
 #define vertical_stick	A3                                        // Speed
 #define DEBOUNCE 10                                               // Set debounce time (10ms in this case)
 
-HardwareSerial radio = Serial;                                    // Connect radio to Serial port
+HardwareSerial radio = Serial;                                    // Connect radio to radio port
 
 int IO, mode, spd, brk, dir, res = 0;                             // Variables sent to crawler
 int RTH, RC, power, Auto, setHome, steering, speed;               // Variables on controller
@@ -36,7 +36,7 @@ long prevtime, time = 0;
 
 void setup () 
 {
-  radio.begin (115200);
+  radio.begin (9600);
   
   pinMode (left_button, INPUT);
   pinMode (right_button, INPUT);
@@ -52,21 +52,21 @@ void setup ()
   modeCheck();
   transmitCommand();
   
-  #if DEBUG
-  Serial.print (powerOff);
-  Serial.print (" ");
-  Serial.print (powerOn);
-  Serial.print (" ");
-  Serial.print (RTH);
-  Serial.print (" ");
-  Serial.print (RC);
-  Serial.print (" ");
-  Serial.print (speed);
-  Serial.print (" ");
-  Serial.print (steering);
-  Serial.print (" ");
-  Serial.println (setHome);
-  #endif
+ /* #if DEBUG
+  radio.print (powerOff);
+  radio.print (" ");
+  radio.print (powerOn);
+  radio.print (" ");
+  radio.print (RTH);
+  radio.print (" ");
+  radio.print (RC);
+  radio.print (" ");
+  radio.print (speed);
+  radio.print (" ");
+  radio.print (steering);
+  radio.print (" ");
+  radio.println (setHome);
+  #endif */
 }
 
 
@@ -78,7 +78,8 @@ void loop ()
     spd = constrain(spd, 255, -255);                                   // Constrain values
     
     if (speed == 509)                                                  // If joystick is centered
-    brk = 255;                                                         // Apply brakes
+    //brk = 255;                                                         // Apply brakes (Only for TREX)
+    spd = 0;
     
     dir = map(steering, 1060, 0, 1000, 2000);                          // Map values from joysitck to turning angle
     dir = constrain(dir, 1000, 2000);                                  // Constrain values
