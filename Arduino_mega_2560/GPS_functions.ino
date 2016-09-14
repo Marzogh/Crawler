@@ -55,7 +55,7 @@ void readGPS()                                                               // 
   uint32_t timer = millis();
   if (! usingInterrupt)                                                      // In case you are not using the interrupt above, you'll need to 'hand query' the GPS (Not recommended)        
   {
-    char c = GPS.read();                                                     // Read data from the GPS in the 'main loop'
+    char c = GPS.read();                                                    // Read data from the GPS in the 'main loop'
     #if DEBUG                                                               // If you want to debug, this is a good time to do it!
       if (c) Serial1.print(c);
     #endif

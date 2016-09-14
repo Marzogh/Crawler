@@ -37,7 +37,7 @@ void turnRight()
 
 void turnRightRev()
 {
-  turnDirection = right;
+  turnDirection = left;
   lmspeed, rmspeed = TURN_SPEED;
   //lmbrake, rmbrake=0;                       // Turns off brakes
   setServos();
@@ -55,7 +55,7 @@ void turnLeft()
 
 void turnLeftRev()
 {
-  turnDirection = left;
+  turnDirection = right;
   lmspeed, rmspeed = TURN_SPEED;
   //lmbrake, rmbrake=0;                       // Turns off brakes
   setServos();

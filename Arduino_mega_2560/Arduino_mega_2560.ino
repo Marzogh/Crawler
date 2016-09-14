@@ -25,8 +25,9 @@
   #include <Adafruit_LSM9DS0.h>                           // Used by: IMU
   #include <Adafruit_Simple_AHRS.h>                       // Used by: IMU
   #include <NewPing.h>                                    // Used by: Ultrasonics
-  #include <Adafruit_GPS.h>                               // Used by: GPS
+  //#include <Adafruit_GPS.h>                               // Used by: GPS
   #include <SoftwareSerial.h>                             // Used by: GPS (Uncomment if SoftwareSerial is needed)
+  #include <TinyGPS++.h>                                  // Used by: GPS
   #include "Waypoint_class.h"                             // Custom class to manage GPS waypoints
   #include <math.h>                                       // Used by: GPS
   #include "moving_average.h"                             // Simple moving average class; for Sonar functionality
@@ -71,8 +72,9 @@
   // If using software serial, enable the line below and change pins to match:
   //SoftwareSerial mySerial(3, 2);
   // If using hardware serial (e.g. Arduino Mega), comment out the above SoftwareSerial line, and enable this line below instead and change the Serial port number to match.
-  HardwareSerial mySerial = Serial2;
-  Adafruit_GPS GPS(&mySerial);
+  HardwareSerial ss = Serial2;
+  //Adafruit_GPS GPS(&ss);
+  TinyGPSPlus GPS; // The TinyGPS++ object
                                                        // Set to 'true' if you want to debug and listen to the raw GPS sentences. 
   boolean usingInterrupt = false;                      // This keeps track of whether we're using the interrupt (off by default!)
   
@@ -219,9 +221,10 @@
     #if DEBUG
     Serial1.begin(115200);
     #endif
+    ss.begin(9600);
     radio.begin(115200);
     Wire.begin();
-    batteryCheck();                                         //Check for low battery
+    //batteryCheck();                                         //Check for low battery
     startSensors();
     setHome();
     
@@ -235,18 +238,16 @@
   
   void loop()
   {
-    while (mode=0)                                         //Radio commands autonomous navigation
-    {
+    switch (mode) {
+      case 0:                                             //Radio commands autonomous navigation
       autoNavigate();
-    }
-    
-    while (mode==1)                                        //Radio commands Return to Home
-    {
+      break;
+      
+      case 1:                                            //Radio commands Return to Home
       returnHome();
-    }
-    
-    while (mode==2)                                        //Radio commands RC navigation
-    {
+      break;
+      
+      case 2:                                            //Radio commands RC navigation
       radioControl();
-    }
+      break;
   }
